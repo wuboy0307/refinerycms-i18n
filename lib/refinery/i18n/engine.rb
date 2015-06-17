@@ -26,7 +26,10 @@ module Refinery
           def find_or_set_locale
             ::I18n.locale = ::Refinery::I18n.current_frontend_locale
 
-            if ::Refinery::I18n.has_locale?(locale = params[:locale].try(:to_sym))
+	          locale = params[:locale].try(:to_sym)
+            # to fix zh-tw become zh problem
+	          locale = ::Refinery::I18n.config.url_locale_mappings[locale] if ::Refinery::I18n.config.url_locale_mappings.include?(locale)
+            if ::Refinery::I18n.has_locale?(locale)
               ::I18n.locale = locale
             elsif locale.present? && locale != ::Refinery::I18n.default_frontend_locale
               params[:locale] = ::I18n.locale = ::Refinery::I18n.default_frontend_locale
